@@ -1,0 +1,49 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (keep structure, ignore content)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Logs
+*.log
+
+# Virtual environment
+.env
+.venv
+
+# Temporary files
+*.tmp
+*.bak
+temp_*.py
+flask_out*.txt
+flask_err*.txt
+
+# HTML diagrams (documentation)
+docs/*.html
+docs/generate_diagrams.py
+
+# Backup data
+data/raw_backup/
+temp_check_*.py

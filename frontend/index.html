@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java vs Python 招聘数据分析看板</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="header" role="banner">
+  <div class="header-inner">
+    <h1>
+      <span class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </span>
+      Java vs Python 招聘数据分析
+    </h1>
+    <div class="header-meta">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        数据来源：主流招聘平台
+      </span>
+      <span class="badge" id="update-time">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        实时数据
+      </span>
+    </div>
+  </div>
+</header>
+
+<main class="container" role="main">
+
+  <!-- 概览卡片 -->
+  <section class="overview" aria-label="数据概览">
+    <div class="overview-card total">
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+        </svg>
+      </div>
+      <div class="label">岗位总数</div>
+      <div class="value" id="total-count">--</div>
+      <div class="sub">Java + Python</div>
+    </div>
+    <div class="overview-card java">
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"/>
+          <polyline points="8 6 2 12 8 18"/>
+        </svg>
+      </div>
+      <div class="label">Java 岗位</div>
+      <div class="value" id="java-count">--</div>
+      <div class="sub">平均薪资：<span id="java-avg-salary">--</span></div>
+    </div>
+    <div class="overview-card python">
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="label">Python 岗位</div>
+      <div class="value" id="python-count">--</div>
+      <div class="sub">平均薪资：<span id="python-avg-salary">--</span></div>
+    </div>
+    <div class="overview-card salary">
+      <div class="card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="label">薪资差异</div>
+      <div class="value" style="font-size:24px;" id="salary-value">--</div>
+      <div class="sub" id="salary-diff">--</div>
+    </div>
+  </section>
+
+  <!-- 薪资分布 -->
+  <section class="chart-grid cols-1" aria-label="薪资区间分布">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>薪资区间分布对比</h3>
+      </div>
+      <div class="chart-card-body large">
+        <div id="chart-salary-dist" style="width:100%;height:100%;min-height:380px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 城市分布 + 城市薪资 -->
+  <section class="chart-grid cols-2" aria-label="城市数据分析">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>Top10 城市岗位分布</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-city-dist" style="width:100%;height:100%;min-height:380px;"></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>各城市平均薪资对比</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-city-salary" style="width:100%;height:100%;min-height:380px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 经验要求 + 经验薪资 -->
+  <section class="chart-grid cols-2" aria-label="经验数据分析">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>经验要求分布</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-experience" style="width:100%;height:100%;min-height:360px;"></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>不同经验级别薪资趋势</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-experience-salary" style="width:100%;height:100%;min-height:360px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 学历分布 + 学历薪资 -->
+  <section class="chart-grid cols-2" aria-label="学历数据分析">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>学历要求分布</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-education" style="width:100%;height:100%;min-height:360px;"></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>不同学历薪资雷达图</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-education-salary" style="width:100%;height:100%;min-height:360px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术标签 -->
+  <section class="tag-section" aria-label="技术标签分析">
+    <div class="tag-card">
+      <h3><span class="dot java" aria-hidden="true"></span>Java 热门技术标签 Top15</h3>
+      <div id="chart-tags-java" style="width:100%;height:430px;"></div>
+    </div>
+    <div class="tag-card">
+      <h3><span class="dot python" aria-hidden="true"></span>Python 热门技术标签 Top15</h3>
+      <div id="chart-tags-python" style="width:100%;height:430px;"></div>
+    </div>
+  </section>
+
+  <!-- 公司规模 -->
+  <section class="chart-grid cols-1" aria-label="公司规模分布">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <h3><span class="dot both" aria-hidden="true"></span>招聘公司规模分布</h3>
+      </div>
+      <div class="chart-card-body">
+        <div id="chart-company-size" style="width:100%;height:100%;min-height:360px;"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" role="contentinfo">
+  <p>
+    招聘数据分析看板
+    <span class="dot-sep" aria-hidden="true"></span>
+    数据来自公开招聘信息
+    <span class="dot-sep" aria-hidden="true"></span>
+    仅供参考
+  </p>
+  <p style="margin-top:6px;">Powered by Python + Flask + ECharts 5</p>
+</footer>
+
+<script src="/js/echarts.min.js"></script>
+<script src="/js/dashboard.js"></script>
+
+<noscript>
+  <div style="padding:60px;text-align:center;color:#DC2626;font-size:16px;font-family:sans-serif;">
+    请启用 JavaScript 以查看图表数据。
+  </div>
+</noscript>
+
+</body>
+</html>
